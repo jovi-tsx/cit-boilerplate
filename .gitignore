@@ -1,0 +1,7 @@
+# Build Files
+.build
+
+# Local Files (Mainly .envs)
+*.local
+
+node_modules
