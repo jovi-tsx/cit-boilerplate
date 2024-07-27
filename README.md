@@ -26,26 +26,13 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 
 -----------------------------------------------------
 
-### Controllers
-
-Todo controller deve ter como sufixo a palavra **Controller**:
-
-```js
-// Evite usar:
-angular.app("app").controller("cadastro", function() {});
-
-// Recomendado:
-angular.app("app").controller("cadastroController", function() {});
-```
-
------------------------------------------------------
-
 ## Low Code Deploy
 
-### Função "executeFaas"
+### Função de serviço da Central IT
 
-As requisições utilizando o *RuntimeManagerRepository* devem ser chamadas através do `$scope`, ficando da seguinte maneira
+As requisições utilizando o *RuntimeManagerRepository* e o *DataAccessObject* deverão ser chamados através do `$scope`, ficando da seguinte maneira:
 
 ```js
+let response = await RuntimeManagerRepository.executeFaaS("CCAB_SERVICE", params);
 let response = await $scope.executeFaaS("CCAB_SERVICE", params);
 ```
