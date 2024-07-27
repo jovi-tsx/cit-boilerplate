@@ -5,7 +5,7 @@ const app = angular.module("app");
 app.factory("RuntimeManagerRepository", [
     "$http",
     "$rootScope",
-    function ($http) {
+    function ($http, $rootScope) {
         function executeBusinessRule(name, params) {
             const { $utils } = $rootScope;
 
