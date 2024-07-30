@@ -4,6 +4,19 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 
 ---
 
+## Tabela de Conteúdo
+
+1. [Responsabilidade Única](#responsabilidade-única)
+1. [IIFE](#iife)
+1. [Módulos](#módulos)
+1. [Controladores](#controladores) - Pendente
+1. [Diretivas](#diretivas) - Pendente
+1. [Resolvendo Promises](#resolvendo-promises) - Pendente
+1. [Nomes](#nomes)
+1. [Rotas](#rotas)
+
+---
+
 ## Como Iniciar
 
 1. Clone o repositório: `git clone https://github.com/jovi-tsx/cit-boilerplate.git`
@@ -28,6 +41,170 @@ let response = await $scope.executeFaaS("CCAB_SERVICE", params);
 
 ---
 
+## Responsabilidade Única
+
+### Regra de 1
+
+- Defina 1 componente por arquivo, recomendado que seja com menos de 400 linhas de código.
+
+    _Por quê?_: Um componente por arquivo promove testes unitários e mocks mais fáceis.
+
+    _Por quê?_: Um componente por arquivo facilita muito a leitura, manutenção e evita colisões com equipes no controle de versão.
+
+    _Por quê?_: Um componente por arquivo evita bugs ocultos que frequentemente surgem ao combinar componentes em um arquivo onde eles podem compartilhar variáveis, criar closures indesejadas ou acoplamento indesejado com dependências.
+
+    O exemplo a seguir define o módulo `app` e suas dependências, define um controlador e uma fábrica, tudo no mesmo arquivo.
+
+    ```javascript
+    /* evite */
+    angular
+        .module("app", ["ngRoute"])
+        .controller("SomeController", SomeController)
+        .factory("someFactory", someFactory);
+
+    function SomeController() {}
+
+    function someFactory() {}
+    ```
+
+    Os mesmos componentes agora estão separados em seus próprios arquivos.
+
+    ```javascript
+    /* recomendado */
+
+    // app.module.js
+    angular.module("app", ["ngRoute"]);
+    ```
+
+    ```javascript
+    /* recomendado */
+
+    // some.controller.js
+    angular.module("app").controller("SomeController", SomeController);
+
+    function SomeController() {}
+    ```
+
+    ```javascript
+    /* recomendado */
+
+    // some.factory.js
+    angular.module("app").factory("someFactory", someFactory);
+
+    function someFactory() {}
+    ```
+
+**[Voltar ao topo](#tabela-de-conteúdo)**
+
+### Funções Pequenas
+
+- Defina funções pequenas, com no máximo 75 linhas de código (menos é melhor).
+
+    _Por quê?_: Funções pequenas são mais fáceis de testar, especialmente quando fazem uma coisa e servem a um propósito.
+
+    _Por quê?_: Funções pequenas promovem a reutilização.
+
+    _Por quê?_: Funções pequenas são mais fáceis de ler.
+
+    _Por quê?_: Funções pequenas são mais fáceis de manter.
+
+    _Por quê?_: Funções pequenas ajudam a evitar bugs ocultos que surgem com funções grandes que compartilham variáveis com escopo externo, criam closures indesejadas ou acoplamento indesejado com dependências.
+
+**[Voltar ao topo](#tabela-de-conteúdo)**
+
+## IIFE
+
+### Escopos em JavaScript
+
+- Envolva componentes Angular em uma Expressão de Função Auto-invocada (IIFE).
+
+    _Por quê?_: Uma IIFE remove variáveis do escopo global. Isso ajuda a evitar que variáveis e declarações de função permaneçam mais tempo do que o esperado no escopo global, o que também ajuda a evitar colisões de variáveis.
+
+    _Por quê?_: Quando seu código é minificado e empacotado em um único arquivo para implantação em um servidor de produção, você pode ter colisões de variáveis e muitas variáveis globais. Uma IIFE protege contra ambos, fornecendo escopo de variáveis para cada arquivo.
+
+    ```javascript
+    /* evite */
+    // logger.js
+    angular.module("app").factory("logger", logger);
+
+    // a função logger é adicionada como uma variável global
+    function logger() {}
+
+    // storage.js
+    angular.module("app").factory("storage", storage);
+
+    // a função storage é adicionada como uma variável global
+    function storage() {}
+    ```
+
+    ```javascript
+    /**
+     * recomendado
+     *
+     * nenhuma variável global é deixada para trás
+     */
+
+    // logger.js
+    (function () {
+        "use strict";
+
+        angular.module("app").factory("logger", logger);
+
+        function logger() {}
+    })();
+
+    // storage.js
+    (function () {
+        "use strict";
+
+        angular.module("app").factory("storage", storage);
+
+        function storage() {}
+    })();
+    ```
+
+- Nota: Para brevidade, apenas, os demais exemplos neste guia podem omitir a sintaxe IIFE.
+
+- Nota: IIFEs impedem que o código de teste alcance membros privados como expressões regulares ou funções auxiliares, que muitas vezes são boas para testes unitários diretamente por conta própria. No entanto, você pode testá-los através de membros acessíveis ou expondo-os através de seu próprio componente. Por exemplo, colocando funções auxiliares, expressões regulares ou constantes em sua própria fábrica ou constante.
+
+**[Voltar ao topo](#tabela-de-conteúdo)**
+
+## Módulos
+
+### Evitar Colisões de Nomes
+
+- Use convenções de nomenclatura únicas com separadores para submódulos.
+
+    _Por quê?_: Nomes únicos ajudam a evitar colisões de nomes de módulos. Os separadores ajudam a definir módulos e sua hierarquia de submódulos. Por exemplo, `app` pode ser seu módulo raiz enquanto `app.dashboard` e `app.users` podem ser módulos usados como dependências de `app`.
+
+### Definições (também conhecidos como Setters)
+
+- Declare módulos sem uma variável usando a sintaxe setter.
+
+    _Por quê?_: Com 1 componente por arquivo, raramente há necessidade de introduzir uma variável para o módulo.
+
+    ```javascript
+    /* evite */
+    var app = angular.module("app", [
+        "ngAnimate",
+        "ngRoute",
+        "app.shared",
+        "app.dashboard",
+    ]);
+    ```
+
+    Em vez disso, use a simples sintaxe setter.
+
+    ```javascript
+    /* recomendado */
+    angular.module("app", [
+        "ngAnimate",
+        "ngRoute",
+        "app.shared",
+        "app.dashboard",
+    ]);
+    ```
+
 ## Nomes
 
 ### Diretrizes de Nomenclatura
@@ -36,9 +213,9 @@ let response = await $scope.executeFaaS("CCAB_SERVICE", params);
   - o nome do arquivo (`avengers.controller.js`)
   - o nome do componente registrado com Angular (`AvengersController`)
 
-    _Por quê?_: Convenções de nomenclatura ajudam a fornecer uma maneira consistente de encontrar conteúdo rapidamente. A consistência dentro do projeto é vital. A consistência com a equipe é importante. A consistência em toda a empresa proporciona uma eficiência tremenda.
+      _Por quê?_: Convenções de nomenclatura ajudam a fornecer uma maneira consistente de encontrar conteúdo rapidamente. A consistência dentro do projeto é vital. A consistência com a equipe é importante. A consistência em toda a empresa proporciona uma eficiência tremenda.
 
-    _Por quê?_: As convenções de nomenclatura devem simplesmente ajudá-lo a encontrar seu código mais rápido e torná-lo mais fácil de entender.
+      _Por quê?_: As convenções de nomenclatura devem simplesmente ajudá-lo a encontrar seu código mais rápido e torná-lo mais fácil de entender.
 
 ### Nomes de Arquivos de Funcionalidades
 
@@ -218,7 +395,7 @@ let response = await $scope.executeFaaS("CCAB_SERVICE", params);
     function xxAvengerProfile() {}
     ```
 
-### Módulos
+### Nomes de Módulos
 
 - Quando há vários módulos, o arquivo do módulo principal é nomeado `app.module.js`, enquanto outros módulos dependentes são nomeados de acordo com o que representam. Por exemplo, um módulo de administração é nomeado `admin.module.js`. Os respectivos nomes de módulos registrados seriam `app` e `admin`.
 
@@ -236,4 +413,4 @@ let response = await $scope.executeFaaS("CCAB_SERVICE", params);
 
 ### Rotas
 
-- Separe a configuração de rotas em seu próprio arquivo. Exemplos podem ser `app.route.js` para o módulo principal e `admin.route.js` para o módulo `admin`. Mesmo em aplicativos menores, prefiro essa separação do restante da configuração. _Obs: Neste boilerplate coloquei apenas "app.js" e "router.js" pois geralmente trabalhamos na empresa com somente um módulo._
+- Separe a configuração de rotas em seu próprio arquivo. Exemplos podem ser `app.route.js` para o módulo principal e `admin.route.js` para o módulo `admin`. Mesmo em aplicativos menores, prefiro essa separação do restante da configuração.
