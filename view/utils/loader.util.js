@@ -1,5 +1,5 @@
 angular.element(document).ready(function () {
-    angular.module("app").run(($rootScope) => {
+    angular.module("app").run(['$rootScope', ($rootScope) => {
         $rootScope.$utils.showLoader = (mensagem) => {
             $(".hyper-loading").show();
             $(".hyper-loading-block").show();
@@ -10,5 +10,5 @@ angular.element(document).ready(function () {
             $(".hyper-loading").hide();
             $(".hyper-loading-block").hide();
         };
-    });
+    }]);
 });
