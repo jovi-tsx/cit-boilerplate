@@ -4,7 +4,7 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 
 ---
 
-## Como Usar
+## Como Iniciar
 
 1. Clone o repositório: `git clone https://github.com/jovi-tsx/cit-boilerplate.git`
 2. Instale as dependências: `npm install`
