@@ -1,9 +1,13 @@
-const { shadowRoot } = document.body;
+(function () {
+    "use strict";
 
-angular.module("app", ["ui.router"]).run(() => {
-    console.log("Módulo 'app' inicializado");
-});
+    const { shadowRoot } = document.body;
 
-angular.element(document).ready(function () {
-    angular.bootstrap(shadowRoot.querySelector("[ng-app]"), ["app"]);
-});
+    angular.module("app", ["ui.router"]).run(() => {
+        console.log("Módulo 'app' inicializado");
+    });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(shadowRoot.querySelector("[ng-app]"), ["app"]);
+    });
+})();

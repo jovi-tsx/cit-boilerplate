@@ -1,10 +1,14 @@
-angular.module("app").config(($stateProvider, $urlRouterProvider) => {
-    $stateProvider.state({
-        name: "index",
-        url: "/",
-        templateUrl: "/pages/index.html",
-    });
+(function () {
+    "use strict";
 
-    // Default URL
-    $urlRouterProvider.otherwise("/");
-});
+    angular.module("app").config(($stateProvider, $urlRouterProvider) => {
+        $stateProvider.state({
+            name: "index",
+            url: "/",
+            templateUrl: "/pages/index.html",
+        });
+
+        // Default URL
+        $urlRouterProvider.otherwise("/");
+    });
+})();
