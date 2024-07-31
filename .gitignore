@@ -1,7 +1,10 @@
+node_modules
+
 # Build Files
 .build
 
 # Local Files (Mainly .envs)
 *.local
 
-node_modules
+# Tailwind output file
+view/assets/styles/main.css

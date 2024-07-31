@@ -2,16 +2,23 @@
     "name": "cit-boilerplate",
     "author": "João Vitor Barbosa Zorzetti",
     "description": "Estrutura padrão de projeto",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "main": "./server.js",
     "license": "MIT",
     "scripts": {
-        "dev": "nodemon ./server.js"
+        "nodemon": "nodemon ./server.js",
+        "tailwind": "npx tailwindcss -i ./view/assets/styles/globals.css -o ./view/assets/styles/main.css",
+        "dev": "npm run tailwind && npm run nodemon",
+        "dev:yarn": "yarn run tailwind && yarn run nodemon",
+        "dev:pn": "pn tailwind && pn nodemon"
     },
     "dependencies": {
         "axios": "^1.7.2",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "nodemon": "^3.1.4"
+    },
+    "devDependencies": {
+        "tailwindcss": "^3.4.7"
     }
 }
