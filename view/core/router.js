@@ -6,6 +6,8 @@
             name: "index",
             url: "/",
             templateUrl: "/pages/index.html",
+            controller: 'ExemploController',
+            controllerAs: 'ex'
         });
 
         // Default URL

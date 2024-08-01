@@ -3,8 +3,10 @@
 
     angular.module("app").controller("ExemploController", [
         "$scope",
-        function ($scope) {
-            $scope.ola = "Olá!";
+        function () {
+            const vm = this;
+
+            vm.ola = "Olá!";
         },
     ]);
 })();
