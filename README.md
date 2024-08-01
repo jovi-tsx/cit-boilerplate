@@ -490,7 +490,7 @@ function OrderController($http, $q, config, userInfo) {
 
     _Por que?_: Reutilizar controllers com várias views é frágil, e uma boa cobertura de teste end-to-end (e2e) é necessária para garantir a estabilidade em grandes aplicações.
 
-### Atribuindo Controllers
+#### Atribuindo Controllers
 
 - Quando um controller deve ser emparelhado com uma view e qualquer componente pode ser reutilizado por outros controllers ou views, defina os controllers junto com suas rotas.
 
@@ -876,7 +876,7 @@ function ExampleController() {
 
 **[Voltar ao topo](#tabela-de-conteúdo)**
 
-## Componentes
+### Componentes
 
 Um componente é um tipo especial de diretiva que utiliza uma configuração simplificada e mais adequada para uma estrutura de aplicação baseada em componentização.
 
@@ -895,7 +895,7 @@ Quando não usar componentes:
 
 **[Voltar ao topo](#tabela-de-conteúdo)**
 
-## Resolvendo Promises
+### Resolvendo Promises
 
 **[Voltar ao topo](#tabela-de-conteúdo)**
 
