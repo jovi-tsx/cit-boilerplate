@@ -12,7 +12,7 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 1. [Controladores](#controladores)
 1. [Diretivas](#diretivas)
 1. [Componentes](#componentes)
-1. [Resolvendo Promises](#resolvendo-promises) - Pendente
+1. [Resolvendo Promises](#resolvendo-promises)
 1. [Nomeação](#nomeação)
 1. [Rotas](#rotas)
 
@@ -21,8 +21,8 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 ## Como Iniciar
 
 1. Clone o repositório: `git clone https://github.com/jovi-tsx/cit-boilerplate.git`
-2. Instale as dependências: `npm install`
-3. Inicie o desenvolvimento: `npm run dev`
+2. Instale as dependências: `npm install`, `yarn install`, `pn install`
+3. Inicie o desenvolvimento: `npm run dev`, `yarn dev`, `pn dev`
 
 ---
 
@@ -896,6 +896,212 @@ Quando não usar componentes:
 **[Voltar ao topo](#tabela-de-conteúdo)**
 
 ### Resolvendo Promises
+
+#### Promessas de Ativação de Controllers
+
+- Resolva a lógica de inicialização para um controller em uma função activate.
+
+    _Por que?_: Colocar a lógica de inicialização em um lugar consistente no controller facilita a localização, torna mais consistente para testar e ajuda a evitar espalhar a lógica de ativação pelo controller.
+
+    _Por que?_: O activate do controller facilita a reutilização da lógica para uma atualização do controller/View, mantém a lógica junta, leva o usuário mais rapidamente para a View, facilita animações no ng-view ou ui-view, e dá uma sensação de maior agilidade para o usuário.
+
+    Nota: Se você precisar cancelar condicionalmente a rota antes de começar a usar o controller, use uma resolução de rota.
+
+```javascript
+/* evite */
+function AvengersController(dataservice) {
+    var vm = this;
+    vm.avengers = [];
+    vm.title = 'Avengers';
+
+    dataservice.getAvengers().then(function(data) {
+        vm.avengers = data;
+        return vm.avengers;
+    });
+}
+```
+
+```javascript
+/* recomendado */
+function AvengersController(dataservice) {
+    var vm = this;
+    vm.avengers = [];
+    vm.title = 'Avengers';
+
+    activate();
+
+    ////////////
+
+    function activate() {
+        return dataservice.getAvengers().then(function(data) {
+            vm.avengers = data;
+            return vm.avengers;
+        });
+    }
+}
+```
+
+#### Promessas de Resolução de Rotas
+
+- Quando um controller depende de uma promessa a ser resolvida antes que o controller seja ativado, resolva essas dependências no $routeProvider antes da lógica do controller ser executada. Se precisar cancelar condicionalmente uma rota antes do controller ser ativado, use um resolvedor de rota.
+
+- Use uma resolução de rota quando você quiser decidir cancelar a rota antes de realmente fazer a transição para a View.
+
+    _Por que?_: Um controller pode exigir dados antes de ser carregado. Esses dados podem vir de uma promessa via uma fábrica personalizada ou $http. Usar uma resolução de rota permite que a promessa seja resolvida antes da lógica do controller ser executada, para que possa agir com base nesses dados da promessa.
+
+    _Por que?_: O código é executado após a rota e na função de ativação do controller. A View começa a carregar imediatamente. A vinculação de dados é ativada quando a promessa de ativação é resolvida. Uma animação de “ocupado” pode ser mostrada durante a transição da view (via ng-view ou ui-view).
+
+    Nota: O código é executado antes da rota via uma promessa. Rejeitar a promessa cancela a rota. A resolução faz a nova view esperar pela resolução da rota. Uma animação de “ocupado” pode ser mostrada antes da resolução e durante a transição da view. Se você quiser chegar à View mais rapidamente e não precisar de um ponto de verificação para decidir se pode chegar à View, considere a técnica de ativação do controller.
+
+```javascript
+/* evite */
+angular
+    .module('app')
+    .controller('AvengersController', AvengersController);
+
+function AvengersController(movieService) {
+    var vm = this;
+    // não resolvido
+    vm.movies;
+    // resolvido assincronamente
+    movieService.getMovies().then(function(response) {
+        vm.movies = response.movies;
+    });
+}
+```
+
+```javascript
+/* melhor */
+
+// route-config.js
+angular
+    .module('app')
+    .config(config);
+
+function config($routeProvider) {
+    $routeProvider
+        .when('/avengers', {
+            templateUrl: 'avengers.html',
+            controller: 'AvengersController',
+            controllerAs: 'vm',
+            resolve: {
+                moviesPrepService: function(movieService) {
+                    return movieService.getMovies();
+                }
+            }
+        });
+}
+
+// avengers.js
+angular
+    .module('app')
+    .controller('AvengersController', AvengersController);
+
+AvengersController.$inject = ['moviesPrepService'];
+function AvengersController(moviesPrepService) {
+    var vm = this;
+    vm.movies = moviesPrepService.movies;
+}
+```
+
+Nota: O exemplo de código abaixo mostra a resolução de rota apontando para uma função nomeada, o que é mais fácil de depurar e mais fácil de lidar com a injeção de dependência.
+
+```javascript
+/* ainda melhor */
+
+// route-config.js
+angular
+    .module('app')
+    .config(config);
+
+function config($routeProvider) {
+    $routeProvider
+        .when('/avengers', {
+            templateUrl: 'avengers.html',
+            controller: 'AvengersController',
+            controllerAs: 'vm',
+            resolve: {
+                moviesPrepService: moviesPrepService
+            }
+        });
+}
+
+function moviesPrepService(movieService) {
+    return movieService.getMovies();
+}
+
+// avengers.js
+angular
+    .module('app')
+    .controller('AvengersController', AvengersController);
+
+AvengersController.$inject = ['moviesPrepService'];
+function AvengersController(moviesPrepService) {
+      var vm = this;
+      vm.movies = moviesPrepService.movies;
+}
+```
+
+#### Lidando com Exceções em Promessas
+
+- O bloco catch de uma promessa deve retornar uma promessa rejeitada para manter a exceção na cadeia de promessas.
+
+- Sempre lide com exceções em serviços/factories.
+
+    _Por que?_: Se o bloco catch não retornar uma promessa rejeitada, o chamador da promessa não saberá que ocorreu uma exceção. O then do chamador será executado. Assim, o usuário pode nunca saber o que aconteceu.
+
+    _Por que?_: Para evitar engolir erros e desinformar o usuário.
+
+    Nota: Considere colocar qualquer tratamento de exceção em uma função em um módulo e serviço compartilhado.
+
+```javascript
+/* evite */
+
+function getCustomer(id) {
+    return $http.get('/api/customer/' + id)
+        .then(getCustomerComplete)
+        .catch(getCustomerFailed);
+
+    function getCustomerComplete(data, status, headers, config) {
+        return data.data;
+    }
+
+    function getCustomerFailed(e) {
+        var newMessage = 'XHR Failed for getCustomer'
+        if (e.data && e.data.description) {
+          newMessage = newMessage + '\n' + e.data.description;
+        }
+        e.data.description = newMessage;
+        logger.error(newMessage);
+        // ***
+        // Perceba que não há retorno da promessa rejeitada
+        // ***
+    }
+}
+```
+
+```javascript
+/* recomendado */
+function getCustomer(id) {
+    return $http.get('/api/customer/' + id)
+        .then(getCustomerComplete)
+        .catch(getCustomerFailed);
+
+    function getCustomerComplete(data, status, headers, config) {
+        return data.data;
+    }
+
+    function getCustomerFailed(e) {
+        var newMessage = 'XHR Failed for getCustomer'
+        if (e.data && e.data.description) {
+          newMessage = newMessage + '\n' + e.data.description;
+        }
+        e.data.description = newMessage;
+        logger.error(newMessage);
+        return $q.reject(e);
+    }
+}
+```
 
 **[Voltar ao topo](#tabela-de-conteúdo)**
 
