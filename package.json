@@ -1,22 +1,22 @@
 {
-    "name": "cit-boilerplate",
-    "author": "João Vitor Barbosa Zorzetti",
-    "description": "Estrutura padrão de projeto",
-    "version": "1.1.1",
-    "main": "./server.js",
-    "license": "MIT",
-    "scripts": {
-        "nodemon": "nodemon ./server.js",
-        "tailwind": "npx tailwindcss -i ./view/assets/styles/globals.css -o ./view/assets/styles/main.css",
-        "dev": "npm run tailwind && npm run nodemon"
-    },
-    "dependencies": {
-        "axios": "^1.7.2",
-        "dotenv": "^16.4.5",
-        "express": "^4.19.2",
-        "nodemon": "^3.1.4"
-    },
-    "devDependencies": {
-        "tailwindcss": "^3.4.7"
-    }
+  "name": "cit-boilerplate",
+  "author": "João Vitor Barbosa Zorzetti",
+  "description": "Estrutura padrão de projeto",
+  "version": "1.1.2",
+  "main": "./server.js",
+  "license": "MIT",
+  "scripts": {
+    "nodemon": "nodemon ./server.js",
+    "tailwind": "npx tailwindcss -i ./view/assets/styles/globals.css -o ./view/assets/styles/main.css",
+    "dev": "npm run tailwind && npm run nodemon"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.7"
+  }
 }
