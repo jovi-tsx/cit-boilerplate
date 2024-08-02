@@ -2,7 +2,7 @@
   "name": "cit-boilerplate",
   "author": "João Vitor Barbosa Zorzetti",
   "description": "Estrutura padrão de projeto",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "./server.js",
   "license": "MIT",
   "scripts": {
