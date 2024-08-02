@@ -1,8 +1,8 @@
+:root,
+:host {
+  all: initial;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root,
-:host {
-    all: initial;
-}
