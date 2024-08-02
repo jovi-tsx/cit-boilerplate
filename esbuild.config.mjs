@@ -1,5 +1,6 @@
 import fs from "fs";
 import * as esbuild from "esbuild";
+import postcssNested from "postcss-nested";
 import tailwindcss from "tailwindcss";
 import postcss from "postcss";
 import postcssPresetEnv from "postcss-preset-env";
@@ -17,6 +18,7 @@ await esbuild
             const source = fs.readFileSync(args.path, "utf8");
 
             const { css } = await postcss([
+              postcssNested,
               tailwindcss,
               postcssPresetEnv({
                 autoprefixer: {},
