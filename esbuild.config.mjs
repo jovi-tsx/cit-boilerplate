@@ -5,6 +5,8 @@ import tailwindcss from "tailwindcss";
 import postcss from "postcss";
 import postcssPresetEnv from "postcss-preset-env";
 
+import 'dotenv/config'
+
 await esbuild
   .build({
     entryPoints: ["./view/assets/styles/**/*.css"],
