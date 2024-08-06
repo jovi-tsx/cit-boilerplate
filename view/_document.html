@@ -6,7 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico" />
-    <link rel="stylesheet" href="/vendor/css/bootstrap.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <!-- <link rel="stylesheet" href="/vendor/css/bootstrap.min.css" /> -->
 
     <!-- Vendors / Terceiros -->
     <script src="/vendor/js/jquery.min.js"></script>
@@ -21,7 +25,9 @@
       </style>
 
       <div ng-app="app">
-        <layout></layout>
+        <cit-smart-frame>
+          <layout></layout>
+        </cit-smart-frame>
       </div>
 
       <!-- Vendors -->
@@ -42,20 +48,25 @@
 
       <!-- Core -->
       <script src="/core/app.js"></script>
-      <script src="/core/router.js"></script>
+      <script src="/core/cit-smart-frame.js"></script>
       <script src="/core/layout.js"></script>
+
+      <!-- Routers -->
+      <script src="/core/router.js"></script>
 
       <!-- Services -->
       <script src="/services/repository.service.js"></script>
       <script src="/services/dao.service.js"></script>
 
       <!-- Utils -->
+      <script src="/utils/cit-menu.util.js"></script>
       <script src="/utils/loader.util.js"></script>
       <script src="/utils/money.util.js"></script>
 
       <!-- Components -->
 
       <!-- Controllers -->
+      <script src="/controllers/menu.controller.js"></script>
       <script src="/controllers/exemplo.controller.js"></script>
     </template>
   </body>

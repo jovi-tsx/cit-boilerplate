@@ -1,0 +1,44 @@
+<div
+  class="grid grid-cols-[300px_1fr] grid-rows-[45px_1fr] h-screen w-screen data-[track=true]:grid-cols-[60px]"
+  data-track="{{track}}"
+>
+  <div
+    class="flex w-full bg-gray-100 col-span-2 h-full shadow-md border-b border-solid"
+  ></div>
+  <div
+    class="grid grid-cols-[60px_240px] w-full col-span-1 shadow-md bg-gray-100 border-r border-solid relative data-[track=true]:grid-cols-[60px]"
+    data-track="{{track}}"
+  >
+    <div class="flex h-full bg-gray-100 border-r border-solid"></div>
+    <div
+      class="flex flex-col py-2 data-[track=true]:hidden"
+      data-track="{{track}}"
+    >
+      <ul
+        class="flex flex-col m-0 gap-2"
+        ng-controller="MenuController as menuCtrl"
+      >
+        <li class="pr-6 pl-2" ng-repeat="route in menuCtrl.routes">
+          <a
+            ui-sref="{{route.url}}"
+            class="flex p-4 bg-white rounded-md hover:opacity-75 transition-all cursor-pointer font-semibold decoration-transparent hover:text-gray-600 text-gray-700"
+          >
+            {{route.name}}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="flex absolute -right-4 top-16">
+      <button
+        type="button"
+        ng-click="track = !track"
+        class="bg-sky-800 transition-colors flex justify-center items-center rounded-full text-white hover:bg-sky-700"
+      >
+        <span class="material-symbols-outlined"> navigate_before </span>
+      </button>
+    </div>
+  </div>
+  <div id="layout-container" class="w-full col-span-1 p-4 ng-scope">
+    <ng-transclude></ng-transclude>
+  </div>
+</div>
