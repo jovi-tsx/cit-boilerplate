@@ -1,13 +1,18 @@
 (function () {
-    "use strict";
+  "use strict";
 
-    const { shadowRoot } = document.body;
+  const { shadowRoot } = document.body;
 
-    angular.module("app", ["ui.router"]).run(() => {
-        console.log("Módulo 'app' inicializado");
-    });
+  angular.module("app", ["ui.router"]).run([
+    "$rootScope",
+    ($rootScope) => {
+      $rootScope.$utils = {};
 
-    angular.element(document).ready(function () {
-        angular.bootstrap(shadowRoot.querySelector("[ng-app]"), ["app"]);
-    });
+      console.log("Módulo 'app' inicializado");
+    },
+  ]);
+
+  angular.element(document).ready(function () {
+    angular.bootstrap(shadowRoot.querySelector("[ng-app]"), ["app"]);
+  });
 })();
