@@ -1,13 +1,11 @@
 (function () {
-    "use strict";
+  "use strict";
 
-    const { shadowRoot } = document.body;
+  window.NGAPP_NAME = document.querySelector("[ng-app]").getAttribute("ng-app");
 
-    angular.module("app", ["ui.router"]).run(() => {
-        console.log("Módulo 'app' inicializado");
-    });
+  angular.module(NGAPP_NAME, ["ui.router"]).run(($rootScope) => {
+    $rootScope.$utils = {};
 
-    angular.element(document).ready(function () {
-        angular.bootstrap(shadowRoot.querySelector("[ng-app]"), ["app"]);
-    });
+    console.log("Módulo 'app' inicializado");
+  });
 })();

@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  angular.module("app").factory("DataObjectAccess", [
+  angular.module(NGAPP_NAME).factory("DataObjectAccess", [
     "RuntimeManagerRepository",
     function (RuntimeManagerRepository) {
       async function executeFaaS(serviceName, map) {

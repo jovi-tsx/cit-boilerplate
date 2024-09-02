@@ -1,12 +1,10 @@
 (function () {
   "use strict";
 
-  angular.element(document).ready(function () {
-    angular.module("app").run([
-      "$rootScope",
-      ($rootScope) => {
-        $rootScope.track = false;
-      },
-    ]);
-  });
+  angular.module(NGAPP_NAME).run([
+    "$rootScope",
+    ($rootScope) => {
+      $rootScope.track = false;
+    },
+  ]);
 })();

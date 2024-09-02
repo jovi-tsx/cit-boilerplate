@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("app")
+    .module(NGAPP_NAME)
     .constant("routes", [
       {
         name: "Home",

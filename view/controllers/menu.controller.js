@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  angular.module("app").controller("MenuController", [
+  angular.module(NGAPP_NAME).controller("MenuController", [
     "routes",
     function (routes) {
       const vm = this;

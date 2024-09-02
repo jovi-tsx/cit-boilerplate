@@ -7,4 +7,4 @@ node_modules
 *.local
 
 # Tailwind output file
-view/assets/styles/main.css
+view/assets/styles/tw-globals.css

@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  angular.module("app").controller("ExemploController", [
+  angular.module(NGAPP_NAME).controller("ExemploController", [
     "$scope",
     function () {
       const vm = this;

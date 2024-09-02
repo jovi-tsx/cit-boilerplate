@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const app = angular.module("app");
+  const app = angular.module(NGAPP_NAME);
 
   app.factory("RuntimeManagerRepository", [
     "$http",

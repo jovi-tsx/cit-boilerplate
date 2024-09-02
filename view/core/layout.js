@@ -1,7 +1,25 @@
 (function () {
-    "use strict";
+  "use strict";
 
-    angular.module("app").component("layout", {
-        templateUrl: "/layout/layout.html",
-    });
+  angular.module(NGAPP_NAME).component("layout", {
+    templateUrl: "/layout/layout.html",
+    controller: function ($scope, $compile) {
+      angular.element(document).ready(function () {
+        this.$postLink = function () {
+          const shadowContent = document.querySelector("[shadow-template]");
+
+          const shadowAngularApp = document.querySelector(
+            "[shadow-angular-app]"
+          );
+
+          $scope.shadowRoot = shadowAngularApp.attachShadow({ mode: "open" });
+          $scope.shadowRoot.innerHTML = shadowContent.innerHTML;
+
+          shadowContent.remove();
+
+          $compile($scope.shadowRoot)($scope);
+        };
+      });
+    },
+  });
 })();
