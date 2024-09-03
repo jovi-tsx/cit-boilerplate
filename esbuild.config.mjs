@@ -1,59 +1,82 @@
 import fs from "fs";
+
 import * as esbuild from "esbuild";
-import postcssNested from "postcss-nested";
-import postcssModules from "postcss-modules";
-import tailwindcss from "tailwindcss";
-import postcss from "postcss";
-import postcssPresetEnv from "postcss-preset-env";
+
+// ** Plugins
+import postcssPlugin from "./plugins/postcss.mjs";
+import combineJsonPlugin from "./plugins/combine-json.mjs";
+import posthtmlPlugin from "./plugins/posthtml.mjs";
+import citJsPlugin from "./plugins/cit-js.mjs";
 
 import "dotenv/config";
+
+const directories = [
+  ".build/components",
+  ".build/css",
+  ".build/html",
+  ".build/js",
+];
+
+directories.forEach((dir) => {
+  fs.mkdirSync(dir, { recursive: true });
+});
 
 await esbuild
   .build({
     entryPoints: ["./view/assets/styles/**/*.css"],
     outdir: ".build/css",
     bundle: true,
-    plugins: [
-      {
-        name: "postcss",
-        setup(build) {
-          build.onStart(() => console.log("Compilando arquivos CSS..."));
+    write: false,
+    plugins: [postcssPlugin()],
+  })
+  .catch((e) => {
+    console.log(e);
+    process.exit(1);
+  });
 
-          build.onLoad({ filter: /\.css$/ }, async (args) => {
-            const filename = args.path.split("\\").slice(-1)[0];
+await esbuild
+  .build({
+    entryPoints: ["./view/assets/styles/**/*.json"],
+    outdir: ".build",
+    bundle: true,
+    write: false,
+    plugins: [combineJsonPlugin("./.build/cssModules.json")],
+  })
+  .catch((e) => {
+    console.log(e);
+    process.exit(1);
+  });
 
-            if (filename.startsWith("tw-")) {
-              return { contents: "", loader: "css" };
-            }
+await esbuild
+  .build({
+    entryPoints: ["./view/**/*.html"],
+    outdir: ".build/html",
+    bundle: true,
+    write: false,
+    loader: {
+      ".html": "text",
+    },
+    plugins: [posthtmlPlugin()],
+  })
+  .catch((e) => {
+    console.log(e);
+    process.exit(1);
+  });
 
-            const source = fs.readFileSync(args.path, "utf8");
-
-            const { css } = await postcss([
-              postcssNested,
-              tailwindcss,
-              postcssPresetEnv({
-                autoprefixer: {},
-              }),
-              postcssModules({
-                getJSON: () => {},
-                globalModulePaths: [/globals\.css/],
-              }),
-            ]).process(source, { from: args.path });
-
-            return {
-              contents: css,
-              loader: "css",
-            };
-          });
-
-          build.onEnd((result) =>
-            console.log(
-              `Arquivos CSS compilados com ${result.errors.length} erros.`
-            )
-          );
-        },
-      },
+await esbuild
+  .build({
+    entryPoints: [
+      "./view/controllers/*.js",
+      "./view/core/*.js",
+      "./view/components/*.js",
     ],
+    outdir: ".build/js",
+    loader: {
+      ".js": "js",
+    },
+    bundle: true,
+    write: false,
+    plugins: [citJsPlugin()],
   })
   .catch((e) => {
     console.log(e);
