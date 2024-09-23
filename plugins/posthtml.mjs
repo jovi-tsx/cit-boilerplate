@@ -1,6 +1,7 @@
 import fs from "fs";
 import posthtml from "posthtml";
 import posthtmlCssModules from "posthtml-css-modules";
+import beautify from "posthtml-beautify";
 
 const posthtmlPlugin = () => ({
   name: "posthtml",
@@ -14,7 +15,9 @@ const posthtmlPlugin = () => ({
 
       const { html } = await posthtml([
         posthtmlCssModules(".build/cssModules.json"),
-      ]).process(source, { from: args.path });
+      ])
+        .use(beautify({ rules: { indent: 4 } }))
+        .process(source, { from: args.path });
 
       if (["_document.html", "cit-smart-frame.html"].includes(filename)) return;
       else return fs.writeFileSync(`.build/html/${filename}`, html);

@@ -3,10 +3,11 @@ import fs from "fs";
 import * as esbuild from "esbuild";
 
 // ** Plugins
-import postcssPlugin from "./plugins/postcss.mjs";
-import combineJsonPlugin from "./plugins/combine-json.mjs";
-import posthtmlPlugin from "./plugins/posthtml.mjs";
-import citJsPlugin from "./plugins/cit-js.mjs";
+import postcssPlugin from "./plugins/postCss.mjs";
+import combineJsonPlugin from "./plugins/combineJson.mjs";
+import posthtmlPlugin from "./plugins/postHtml.mjs";
+import citJsPlugin from "./plugins/compileJs.mjs";
+import rmSmartFramePlugin from "./plugins/rmSmartFrame.mjs";
 
 import "dotenv/config";
 
@@ -17,22 +18,45 @@ const directories = [
   ".build/js",
 ];
 
+fs.rmSync("./.build", { recursive: true, force: true });
+
 directories.forEach((dir) => {
   fs.mkdirSync(dir, { recursive: true });
 });
 
-await esbuild
-  .build({
-    entryPoints: ["./view/assets/styles/**/*.css"],
-    outdir: ".build/css",
-    bundle: true,
-    write: false,
-    plugins: [postcssPlugin()],
-  })
-  .catch((e) => {
-    console.log(e);
-    process.exit(1);
-  });
+await Promise.all([
+  esbuild
+    .build({
+      entryPoints: ["./view/assets/styles/**/*.css"],
+      outdir: ".build/css",
+      bundle: true,
+      write: false,
+      plugins: [postcssPlugin()],
+    })
+    .catch((e) => {
+      console.log(e);
+      process.exit(1);
+    }),
+  esbuild
+    .build({
+      entryPoints: [
+        "./view/controllers/*.js",
+        "./view/core/*.js",
+        "./view/components/*.js",
+      ],
+      outdir: ".build/js",
+      loader: {
+        ".js": "js",
+      },
+      bundle: true,
+      write: false,
+      plugins: [citJsPlugin()],
+    })
+    .catch((e) => {
+      console.log(e);
+      process.exit(1);
+    }),
+]);
 
 await esbuild
   .build({
@@ -65,18 +89,14 @@ await esbuild
 
 await esbuild
   .build({
-    entryPoints: [
-      "./view/controllers/*.js",
-      "./view/core/*.js",
-      "./view/components/*.js",
-    ],
-    outdir: ".build/js",
+    entryPoints: [".build/html/layout.html"],
+    outdir: ".build/html",
     loader: {
-      ".js": "js",
+      ".html": "text",
     },
     bundle: true,
     write: false,
-    plugins: [citJsPlugin()],
+    plugins: [rmSmartFramePlugin()],
   })
   .catch((e) => {
     console.log(e);
