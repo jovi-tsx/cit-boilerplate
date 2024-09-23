@@ -7,7 +7,7 @@
       {
         name: "Home",
         url: "/",
-        templateUrl: "/pages/index.html",
+        templateUrl: "/html/pages/index.html",
         controller: "ExemploController",
         controllerAs: "ex",
       },

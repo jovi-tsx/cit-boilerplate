@@ -89,7 +89,7 @@ await esbuild
 
 await esbuild
   .build({
-    entryPoints: [".build/html/layout.html"],
+    entryPoints: [".build/html/forms/layout.html"],
     outdir: ".build/html",
     loader: {
       ".html": "text",
