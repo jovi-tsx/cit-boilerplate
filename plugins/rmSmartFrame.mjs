@@ -21,8 +21,6 @@ const rmSmartFramePlugin = () => ({
         .use(beautify({ rules: { indent: 4 } }))
         .process(layoutHtml);
 
-      console.log(html);
-
       fs.writeFileSync(args.path, html);
     });
   },
