@@ -16,10 +16,7 @@ const citJsPlugin = () => ({
           file.path.includes("core\\layout.js")
         )
           fs.writeFileSync(`.build/components/${filename}`, file.contents);
-        else {
-          if (!filename.includes("cit-smart-frame"))
-            fs.writeFileSync(`.build/js/${filename}`, file.contents);
-        }
+         
 
         console.log(`✅ ${filename}`);
       }
