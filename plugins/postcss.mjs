@@ -4,6 +4,7 @@ import postcss from "postcss";
 import postcssNested from "postcss-nested";
 import postcssModules from "postcss-modules";
 import postcssPresetEnv from "postcss-preset-env";
+import cssnanoPlugin from "cssnano";
 
 const postcssPlugin = () => ({
   name: "postcss",
@@ -24,6 +25,9 @@ const postcssPlugin = () => ({
         }),
         postcssModules({
           globalModulePaths: [/globals\.css/],
+        }),
+        cssnanoPlugin({
+          preset: ["default"],
         }),
       ]).process(source, { from: args.path });
 
