@@ -2,7 +2,7 @@ import fs from "fs";
 import posthtml from "posthtml";
 import beautify from "posthtml-beautify";
 
-const rmSmartFramePlugin = () => ({
+const publishHtmlPlugin = () => ({
   name: "rm-smart-frame",
   setup(build) {
     build.onLoad({ filter: /\.html$/ }, async (args) => {
@@ -15,6 +15,14 @@ const rmSmartFramePlugin = () => ({
             if (node.tag === "cit-smart-frame") {
               return node.content; // Retorna o conteúdo da tag, removendo-a
             }
+
+            if (node.tag === "style" && node.content) {
+              // Faz o replace em todo o conteúdo da tag <style>
+              node.content = node.content.map((content) => {
+                return content.replace(/tw-/g, "");
+              });
+            }
+
             return node; // Retorna o nó sem alteração
           });
         })
@@ -26,4 +34,4 @@ const rmSmartFramePlugin = () => ({
   },
 });
 
-export default rmSmartFramePlugin;
+export default publishHtmlPlugin;
