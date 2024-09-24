@@ -7,7 +7,7 @@ import postcssPlugin from "./plugins/postCss.mjs";
 import combineJsonPlugin from "./plugins/combineJson.mjs";
 import posthtmlPlugin from "./plugins/postHtml.mjs";
 import citJsPlugin from "./plugins/compileJs.mjs";
-import rmSmartFramePlugin from "./plugins/rmSmartFrame.mjs";
+import publishHtmlPlugin from "./plugins/publishHtmlPlugin.mjs";
 
 import "dotenv/config";
 
@@ -33,8 +33,7 @@ await Promise.all([
       write: false,
       plugins: [postcssPlugin()],
     })
-    .catch((e) => {
-      console.log(e);
+    .catch(() => {
       process.exit(1);
     }),
   esbuild
@@ -49,11 +48,11 @@ await Promise.all([
         ".js": "js",
       },
       bundle: true,
+      minifySyntax: true,
       write: false,
       plugins: [citJsPlugin()],
     })
-    .catch((e) => {
-      console.log(e);
+    .catch(() => {
       process.exit(1);
     }),
 ]);
@@ -66,8 +65,7 @@ await esbuild
     write: false,
     plugins: [combineJsonPlugin("./.build/cssModules.json")],
   })
-  .catch((e) => {
-    console.log(e);
+  .catch(() => {
     process.exit(1);
   });
 
@@ -82,8 +80,7 @@ await esbuild
     },
     plugins: [posthtmlPlugin()],
   })
-  .catch((e) => {
-    console.log(e);
+  .catch(() => {
     process.exit(1);
   });
 
@@ -96,9 +93,8 @@ await esbuild
     },
     bundle: true,
     write: false,
-    plugins: [rmSmartFramePlugin()],
+    plugins: [publishHtmlPlugin()],
   })
-  .catch((e) => {
-    console.log(e);
+  .catch(() => {
     process.exit(1);
   });
