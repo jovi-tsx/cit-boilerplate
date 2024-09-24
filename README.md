@@ -8,7 +8,6 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 
 1. [Responsabilidade Única](#responsabilidade-única)
 1. [IIFE](#iife)
-1. [Módulos](#módulos)
 1. [Controladores](#controladores)
 1. [Diretivas](#diretivas)
 1. [Componentes](#componentes)
@@ -18,27 +17,24 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 
 ---
 
+## Introdução
+
+A estratégia deste boilerplate é iniciar com uma única página de formulário que servirá como loader da SPA, carregando dinamicamente as demais rotas e controladores com o auxílio do ui-router. Essa abordagem facilita o desenvolvimento externo no VS Code, permitindo uma exportação simples e eficiente dos arquivos para o ambiente Low Code da Central IT. Além disso, proporciona maior modularidade ao código, distribuindo a lógica entre múltiplos controladores, evitando a centralização de responsabilidades em um único controller (God Class), que é amplamente desencorajada.
+
+Outra vantagem é a integração com o GitHub, possibilitando o uso de Code Review e o controle das modificações feitas por cada desenvolvedor, promovendo uma melhor colaboração e rastreabilidade no desenvolvimento e a adesão de novos conceitos nos projetos como Shadow DOM e TypeScript.
+
 ## Como Iniciar
 
 1. Clone o repositório: `git clone https://github.com/jovi-tsx/cit-boilerplate.git`
-2. Instale as dependências: `npm install`, `yarn install`, `pn install`
-3. Inicie o desenvolvimento: `npm run dev`, `yarn dev`, `pn dev`
+1. Instale as dependências: `npm install`, `yarn install`, `pnpm install`
+1. Inicie o desenvolvimento: `npm run dev`, `yarn dev`, `pnpm dev`
 
 ---
 
 ## Low Code Deploy
 
-### Função de serviço da Central IT
-
-As requisições utilizando o _RuntimeManagerRepository_ e o _DataAccessObject_ deverão ser chamados através do `$scope`, ficando da seguinte maneira:
-
-```js
-let response = await RuntimeManagerRepository.executeFaaS(
-    "CCAB_SERVICE",
-    params
-);
-let response = await $scope.executeFaaS("CCAB_SERVICE", params);
-```
+1. Para executar o script que irá gerar os arquivos prontos para deploy no Low Code, execute o comando `npm run build`
+1. Copie o conteúdo dos arquivos para cada parte do sistema ao Low Code.
 
 ---
 
@@ -174,42 +170,6 @@ _O guia abaixo contém trechos retirados da documentação do John Papa (Google 
 
 **[Voltar ao topo](#tabela-de-conteúdo)**
 
-### Módulos
-
-#### Evitar Colisões de Nomes
-
-- Use convenções de nomenclatura únicas com separadores para submódulos.
-
-    _Por quê?_: Nomes únicos ajudam a evitar colisões de nomes de módulos. Os separadores ajudam a definir módulos e sua hierarquia de submódulos. Por exemplo, `app` pode ser seu módulo raiz enquanto `app.dashboard` e `app.users` podem ser módulos usados como dependências de `app`.
-
-#### Definições (também conhecidos como Setters)
-
-- Declare módulos sem uma variável usando a sintaxe setter.
-
-    _Por quê?_: Com 1 componente por arquivo, raramente há necessidade de introduzir uma variável para o módulo.
-
-    ```javascript
-    /* evite */
-    var app = angular.module("app", [
-        "ngAnimate",
-        "ngRoute",
-        "app.shared",
-        "app.dashboard",
-    ]);
-    ```
-
-    Em vez disso, use a simples sintaxe setter.
-
-    ```javascript
-    /* recomendado */
-    angular.module("app", [
-        "ngAnimate",
-        "ngRoute",
-        "app.shared",
-        "app.dashboard",
-    ]);
-    ```
-
 ### Controladores
 
 #### Sintaxe de Visualização com controllerAs
@@ -278,7 +238,7 @@ function CustomerController() {
 ```javascript
 /* recomendado */
 function CustomerController() {
-    var vm = this;
+    const vm = this;
     vm.nome = {};
     vm.enviarMensagem = function() { };
 }
@@ -292,7 +252,7 @@ Nota: Ao criar watches em um controlador usando `controller as`, você pode assi
 
 ```javascript
 function SomeController($scope, $log) {
-    var vm = this;
+    const vm = this;
     vm.titulo = 'Algum Título';
 
     $scope.$watch('vm.titulo', function(atual, original) {
@@ -325,7 +285,7 @@ Nota: Ao trabalhar com bases de código maiores, usar um nome mais descritivo po
 ```javascript
 /* evitar */
 function SessionsController() {
-    var vm = this;
+    const vm = this;
 
     vm.irParaSessao = function() {
       /* ... */
@@ -344,7 +304,7 @@ function SessionsController() {
 ```javascript
 /* recomendado */
 function SessionsController() {
-    var vm = this;
+    const vm = this;
 
     vm.irParaSessao = irParaSessao;
     vm.atualizar = atualizar;
@@ -375,7 +335,7 @@ Nota: Se a função for de uma linha, considere mantê-la no topo, desde que a l
 ```javascript
 /* evitar */
 function SessionsController(data) {
-    var vm = this;
+    const vm = this;
 
     vm.irParaSessao = irParaSessao;
     vm.atualizar = function() {
@@ -396,7 +356,7 @@ function SessionsController(data) {
 ```javascript
 /* recomendado */
 function SessionsController(sessionDataService) {
-    var vm = this;
+    const vm = this;
 
     vm.irParaSessao = irParaSessao;
     vm.atualizar = sessionDataService.atualizar; // 1 linha é OK
@@ -426,17 +386,17 @@ function SessionsController(sessionDataService) {
  * Usando expressões de função.
  */
 function AvengersController(avengersService, logger) {
-    var vm = this;
+    const vm = this;
     vm.vingadores = [];
     vm.titulo = 'Vingadores';
 
-    var ativar = function() {
+    let ativar = function() {
         return obterVingadores().then(function() {
             logger.info('Vista de Vingadores Ativada');
         });
     }
 
-    var obterVingadores = function() {
+    let obterVingadores = function() {
         return avengersService.obterVingadores().then(function(data) {
             vm.vingadores = data;
            
@@ -457,13 +417,13 @@ function AvengersController(avengersService, logger) {
 ```javascript
 /* evite */
 function OrderController($http, $q, config, userInfo) {
-    var vm = this;
+    const vm = this;
     vm.checkCredit = checkCredit;
     vm.isCreditOk;
     vm.total = 0;
 
     function checkCredit() {
-        var settings = {};
+        let settings = {};
         // Obtenha a URL base do serviço de crédito a partir do config
         // Defina os cabeçalhos necessários para o serviço de crédito
         // Prepare a string de consulta da URL ou objeto de dados com a solicitação
@@ -542,6 +502,21 @@ function config($routeProvider) {
 <!-- avengers.html -->
 <div>
 </div>
+```
+
+### Adaptações do Low Code
+
+Para melhor organização, as sintaxes de sufixo devem ser colocadas como prefixo para melhor organização visual e facilitação de localização, já que não há estrutura de pastas no menu. Ficando da seguinte maneira:
+
+```bash
+# Controllers
+controllerAvengers.js
+
+# Services
+serviceDAO.js
+
+# Componentes
+componentButton.js
 ```
 
 **[Voltar ao topo](#tabela-de-conteúdo)**
@@ -695,7 +670,7 @@ angular
     .directive('myCalendarRange', myCalendarRange);
 
 function myCalendarRange() {
-    var directive = {
+    let directive = {
         link: link,
         templateUrl: '/template/is/located/here.html',
         restrict: 'C'
@@ -722,7 +697,7 @@ angular
     .directive('myCalendarRange', myCalendarRange);
 
 function myCalendarRange() {
-    var directive = {
+    let directive = {
         link: link,
         templateUrl: '/template/is/located/here.html',
         restrict: 'EA'
@@ -757,7 +732,7 @@ angular
     .directive('myExample', myExample);
 
 function myExample() {
-    var directive = {
+    let directive = {
         restrict: 'EA',
         templateUrl: 'app/feature/example.directive.html',
         scope: {
@@ -785,7 +760,7 @@ ExampleController.$inject = ['$scope'];
 
 function ExampleController($scope) {
     // Injetando $scope apenas para comparação
-    var vm = this;
+    const vm = this;
     vm.min = 3;
     vm.$onInit = onInit;
     
@@ -841,7 +816,7 @@ angular
     .directive('myExample', myExample);
 
 function myExample() {
-    var directive = {
+    let directive = {
         restrict: 'EA',
         templateUrl: 'app/feature/example.directive.html',
         scope: {
@@ -856,7 +831,7 @@ function myExample() {
 }
 
 function ExampleController() {
-    var vm = this;
+    const vm = this;
     vm.min = 3;
     vm.$onInit = onInit;
     
@@ -910,7 +885,7 @@ Quando não usar componentes:
 ```javascript
 /* evite */
 function AvengersController(dataservice) {
-    var vm = this;
+    const vm = this;
     vm.avengers = [];
     vm.title = 'Avengers';
 
@@ -924,7 +899,7 @@ function AvengersController(dataservice) {
 ```javascript
 /* recomendado */
 function AvengersController(dataservice) {
-    var vm = this;
+    const vm = this;
     vm.avengers = [];
     vm.title = 'Avengers';
 
@@ -960,7 +935,7 @@ angular
     .controller('AvengersController', AvengersController);
 
 function AvengersController(movieService) {
-    var vm = this;
+    const vm = this;
     // não resolvido
     vm.movies;
     // resolvido assincronamente
@@ -999,7 +974,7 @@ angular
 
 AvengersController.$inject = ['moviesPrepService'];
 function AvengersController(moviesPrepService) {
-    var vm = this;
+    const vm = this;
     vm.movies = moviesPrepService.movies;
 }
 ```
@@ -1037,7 +1012,7 @@ angular
 
 AvengersController.$inject = ['moviesPrepService'];
 function AvengersController(moviesPrepService) {
-      var vm = this;
+      const vm = this;
       vm.movies = moviesPrepService.movies;
 }
 ```
@@ -1067,7 +1042,7 @@ function getCustomer(id) {
     }
 
     function getCustomerFailed(e) {
-        var newMessage = 'XHR Failed for getCustomer'
+        let newMessage = 'XHR Failed for getCustomer'
         if (e.data && e.data.description) {
           newMessage = newMessage + '\n' + e.data.description;
         }
@@ -1092,7 +1067,7 @@ function getCustomer(id) {
     }
 
     function getCustomerFailed(e) {
-        var newMessage = 'XHR Failed for getCustomer'
+        let newMessage = 'XHR Failed for getCustomer'
         if (e.data && e.data.description) {
           newMessage = newMessage + '\n' + e.data.description;
         }
@@ -1311,6 +1286,10 @@ function getCustomer(id) {
 
     _Por quê?_: Fornece um local identificável para definir configuração de um módulo.
 
-#### Rotas
+### Rotas
 
 - Separe a configuração de rotas em seu próprio arquivo. Exemplos podem ser `app.route.js` para o módulo principal e `admin.route.js` para o módulo `admin`. Mesmo em aplicativos menores, prefiro essa separação do restante da configuração.
+
+### Melhorias Futuras
+
+Encontrar uma forma de exportar os arquivos diretamente para o Low Code via deploy sem a necessidade de trabalho manual.
