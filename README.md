@@ -19,7 +19,7 @@ Este repositório contém um boilerplate para uso da equipe da Central IT. O obj
 
 ## Introdução
 
-A estratégia deste boilerplate é iniciar com uma única página de formulário que servirá como loader da SPA, carregando dinamicamente as demais rotas e controladores com o auxílio do ui-router. Essa abordagem facilita o desenvolvimento externo no VS Code, permitindo uma exportação simples e eficiente dos arquivos para o ambiente Low Code da Central IT. Além disso, proporciona maior modularidade ao código, distribuindo a lógica entre múltiplos controladores, evitando a centralização de responsabilidades em um único controller (God Class), que é amplamente desencorajada.
+A estratégia deste boilerplate é iniciar com uma única página de formulário que servirá como loader da SPA, carregando dinamicamente as demais rotas e controladores com o auxílio do [ui-router](https://ui-router.github.io/ng1/). Essa abordagem facilita o desenvolvimento externo no VS Code, permitindo uma exportação simples e eficiente dos arquivos para o ambiente Low Code da Central IT. Além disso, proporciona maior modularidade ao código, distribuindo a lógica entre múltiplos controladores, evitando a centralização de responsabilidades em um único controller (God Class), que é amplamente desencorajada.
 
 Outra vantagem é a integração com o GitHub, possibilitando o uso de Code Review e o controle das modificações feitas por cada desenvolvedor, promovendo uma melhor colaboração e rastreabilidade no desenvolvimento e a adesão de novos conceitos nos projetos como Shadow DOM e TypeScript.
 
