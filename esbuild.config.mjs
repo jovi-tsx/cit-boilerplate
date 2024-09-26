@@ -27,6 +27,29 @@ directories.forEach((dir) => {
 await Promise.all([
   esbuild
     .build({
+      entryPoints: ["./view/components/*.ts"],
+      outdir: ".build/components",
+      bundle: true,
+      platform: "browser",
+      target: ["esnext"],
+      tsconfig: "tsconfig.json",
+    })
+    .catch(() => process.exit(1)),
+  esbuild
+    .build({
+      entryPoints: ["./view/controllers/*.ts", "./view/core/*.ts"],
+      outdir: ".build/js",
+      bundle: true,
+      platform: "browser",
+      target: ["esnext"],
+      tsconfig: "tsconfig.json",
+    })
+    .catch(() => process.exit(1)),
+]);
+
+await Promise.all([
+  esbuild
+    .build({
       entryPoints: ["./view/assets/styles/**/*.css"],
       outdir: ".build/css",
       bundle: true,
