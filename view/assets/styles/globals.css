@@ -1,3 +1,8 @@
+html,
+:host {
+  font-size: 62.5%;
+}
+
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined";
   font-weight: normal;
