@@ -9,14 +9,10 @@ const citJsPlugin = () => ({
       for (const file of result.outputFiles) {
         const filename = file.path.split("\\").slice(-1)[0];
 
-        if (!["cit-smart-frame.js", "layout.js"].includes(filename))
+        if (!["cit-smart-frame.js"].includes(filename))
           fs.writeFileSync(`.build/js/${filename}`, file.contents);
-        else if (
-          file.path.includes("components") ||
-          file.path.includes("core\\layout.js")
-        )
+        else if (file.path.includes("components"))
           fs.writeFileSync(`.build/components/${filename}`, file.contents);
-         
 
         console.log(`✅ ${filename}`);
       }

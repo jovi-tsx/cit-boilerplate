@@ -3,6 +3,6 @@
 
   angular.module(NGAPP_NAME).component("citSmartFrame", {
     transclude: true,
-    templateUrl: "/layout/cit-smart-frame.html",
+    templateUrl: "/html/layout/cit-smart-frame.html",
   });
 })();

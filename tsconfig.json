@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "view",
+    "baseUrl": "web",
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -14,8 +14,8 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "incremental": true,
+    "incremental": true
   },
-  "include": ["view"],
+  "include": ["web"],
   "exclude": ["node_modules"]
 }

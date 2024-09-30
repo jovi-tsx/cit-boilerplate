@@ -4,7 +4,9 @@ node_modules
 .build
 
 # Local Files (Mainly .envs)
+**/.env
 *.local
 
-# Tailwind output file
-view/assets/styles/tw-globals.css
+# Temporary
+.cit
+*.tmp

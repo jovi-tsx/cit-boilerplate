@@ -1292,4 +1292,5 @@ function getCustomer(id) {
 
 ### Melhorias Futuras
 
-Encontrar uma forma de exportar os arquivos diretamente para o Low Code via deploy sem a necessidade de trabalho manual.
+- Trazer uma forma de live reload, possivelmente com BrowserSync. Dessa forma, acaba a necessidade de constantemente ficar atualizando a página com F5 ou tendo que recompilar o tailwind sempre que houver alterações no CSS;
+- Encontrar uma forma de exportar os arquivos diretamente para o Low Code via deploy sem a necessidade de trabalho manual.

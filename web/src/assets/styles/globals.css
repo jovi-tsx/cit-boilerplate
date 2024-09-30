@@ -1,6 +1,10 @@
-html,
-:host {
+html {
   font-size: 62.5%;
+}
+
+body,
+:host {
+  font-size: 1.6rem;
 }
 
 .material-symbols-outlined {

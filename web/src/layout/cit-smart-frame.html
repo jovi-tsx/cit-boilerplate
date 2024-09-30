@@ -20,8 +20,8 @@
       >
         <li class="pr-6 pl-2" ng-repeat="route in menuCtrl.routes">
           <a
-            ui-sref="{{route.url}}"
-            class="flex p-4 bg-white rounded-md hover:opacity-75 transition-all cursor-pointer font-semibold decoration-transparent hover:text-gray-600 text-gray-700"
+            ui-sref="{{route.name}}"
+            class="flex p-4 text-base bg-white rounded-md hover:opacity-75 transition-all cursor-pointer font-semibold decoration-transparent hover:text-gray-600 text-gray-700"
           >
             {{route.name}}
           </a>

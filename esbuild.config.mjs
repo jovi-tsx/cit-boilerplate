@@ -27,7 +27,7 @@ directories.forEach((dir) => {
 await Promise.all([
   esbuild
     .build({
-      entryPoints: ["./view/components/*.ts"],
+      entryPoints: ["./web/src/components/*.ts"],
       outdir: ".build/components",
       bundle: true,
       platform: "browser",
@@ -37,7 +37,7 @@ await Promise.all([
     .catch(() => process.exit(1)),
   esbuild
     .build({
-      entryPoints: ["./view/controllers/*.ts", "./view/core/*.ts"],
+      entryPoints: ["./web/src/controllers/*.ts", "./web/src/core/*.ts"],
       outdir: ".build/js",
       bundle: true,
       platform: "browser",
@@ -50,10 +50,9 @@ await Promise.all([
 await Promise.all([
   esbuild
     .build({
-      entryPoints: ["./view/assets/styles/**/*.css"],
+      entryPoints: ["./web/src/assets/styles/**/*.css"],
       outdir: ".build/css",
       bundle: true,
-      write: false,
       plugins: [postcssPlugin()],
     })
     .catch(() => {
@@ -62,15 +61,14 @@ await Promise.all([
   esbuild
     .build({
       entryPoints: [
-        "./view/controllers/*.js",
-        "./view/core/*.js",
-        "./view/components/*.js",
+        "./web/src/controllers/*.js",
+        "./web/src/core/*.js",
+        "./web/src/components/*.js",
       ],
       outdir: ".build/js",
       loader: {
         ".js": "js",
       },
-      bundle: true,
       minifySyntax: true,
       write: false,
       plugins: [citJsPlugin()],
@@ -82,7 +80,7 @@ await Promise.all([
 
 await esbuild
   .build({
-    entryPoints: ["./view/assets/styles/**/*.json"],
+    entryPoints: ["./web/src/assets/styles/**/*.json"],
     outdir: ".build",
     bundle: true,
     write: false,
@@ -94,9 +92,8 @@ await esbuild
 
 await esbuild
   .build({
-    entryPoints: ["./view/**/*.html"],
+    entryPoints: ["./web/src/**/*.html"],
     outdir: ".build/html",
-    bundle: true,
     write: false,
     loader: {
       ".html": "text",
@@ -114,7 +111,6 @@ await esbuild
     loader: {
       ".html": "text",
     },
-    bundle: true,
     write: false,
     plugins: [publishHtmlPlugin()],
   })

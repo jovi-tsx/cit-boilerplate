@@ -2,7 +2,7 @@
   "use strict";
 
   angular.module(NGAPP_NAME).component("layout", {
-    templateUrl: "/html/forms/layout.html",
+    templateUrl: "/components/layout/template.html",
     controller: function ($scope, $compile) {
       angular.element(document).ready(function () {
         this.$postLink = function () {

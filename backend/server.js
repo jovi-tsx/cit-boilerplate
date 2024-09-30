@@ -3,7 +3,7 @@ const path = require("path");
 const axios = require("axios");
 const https = require("https");
 
-require("dotenv").config();
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 
@@ -30,7 +30,7 @@ const api = axios.create({
 
 // Mostrar a pasta src para o navegador.
 // Importante para que os arquivos JS e CSS sejam alcançadas pelo angular
-app.use(express.static(__dirname + "/view"));
+// app.use(express.static(__dirname + "/web/src"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -140,14 +140,14 @@ app.post("/createOrUpdateList", (req, res) => {
     });
 });
 
-app.use((_, res) => {
-  /**
-   * Retorna o arquivo que irá injetar o conteúdo do template
-   */
+/* app.use((_, res) => {
+  //  Retorna o arquivo que irá injetar o conteúdo do template
 
-  res.sendFile("_document.html", { root: path.join(__dirname, "view") });
-});
+  res.sendFile("_document.html", { root: path.join(__dirname, "web/src") });
+}); */
 
 app.listen(process.env.PORT, () => {
-  console.log(`http://localhost:${process.env.PORT}/`);
+  console.log(
+    `Backend is running at: \x1b[35mhttp://localhost:${process.env.PORT}/\x1b[0m`
+  );
 });
