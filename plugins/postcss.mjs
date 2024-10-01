@@ -13,9 +13,6 @@ const postcssPlugin = () => ({
 
     build.onLoad({ filter: /\.css$/ }, async (args) => {
       const source = fs.readFileSync(args.path, "utf8");
-      const filename = args.path.split("\\").slice(-1)[0];
-
-      if (filename.startsWith("tw-")) return;
 
       const { css } = await postcss([
         postcssNested,
@@ -40,11 +37,7 @@ const postcssPlugin = () => ({
     build.onEnd((result) => {
       for (const file of result.outputFiles) {
         const filename = file.path.split("\\").slice(-1)[0];
-
-        if (filename.startsWith("tw-")) return;
-        else {
-          fs.writeFileSync(`.build/css/${filename}`, file.contents);
-        }
+        fs.writeFileSync(`.build/css/${filename}`, file.contents);
       }
 
       console.log(

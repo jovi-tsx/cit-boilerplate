@@ -20,7 +20,13 @@ const posthtmlPlugin = () => ({
         .process(source, { from: args.path });
 
       if (["_document.html", "cit-smart-frame.html"].includes(filename)) return;
-      else {
+      else if (args.path.includes("components")) {
+        fs.mkdirSync(`.build/html/${folder}`, { recursive: true });
+        return fs.writeFileSync(
+          `.build/components/${folder}/${filename}`,
+          html
+        );
+      } else {
         fs.mkdirSync(`.build/html/${folder}`, { recursive: true });
 
         return fs.writeFileSync(`.build/html/${folder}/${filename}`, html);

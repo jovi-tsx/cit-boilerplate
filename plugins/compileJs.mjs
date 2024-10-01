@@ -1,4 +1,5 @@
 import fs from "fs";
+import { resolve } from "path";
 
 const citJsPlugin = () => ({
   name: "cit-js",
@@ -9,12 +10,13 @@ const citJsPlugin = () => ({
       for (const file of result.outputFiles) {
         const filename = file.path.split("\\").slice(-1)[0];
 
-        if (!["cit-smart-frame.js"].includes(filename))
+        if (["cit-smart-frame.js"].includes(filename)) continue;
+        else if (!file.path.includes("components"))
           fs.writeFileSync(`.build/js/${filename}`, file.contents);
-        else if (file.path.includes("components"))
-          fs.writeFileSync(`.build/components/${filename}`, file.contents);
-
-        console.log(`✅ ${filename}`);
+        else {
+          fs.mkdirSync(file.path.replace(filename, ""), { recursive: true });
+          fs.writeFileSync(file.path, file.contents);
+        }
       }
     });
   },
