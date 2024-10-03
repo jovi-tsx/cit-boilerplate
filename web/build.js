@@ -1,8 +1,7 @@
 const fs = require("fs");
-const { resolve } = require("path");
+const { resolve, extname } = require("path");
 const esbuild = require("esbuild");
 const glob = require("glob");
-const tailwindcss = require("tailwindcss");
 const postcss = require("postcss");
 const postcssNested = require("postcss-nested");
 const postcssModules = require("postcss-modules");
@@ -15,11 +14,42 @@ const beautify = require("posthtml-beautify");
 const src = resolve(__dirname, "src");
 const cit = resolve(__dirname, ".cit");
 
+const copyDirectory = (src, dest) => {
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+
+  // Lê os itens da pasta de origem
+  const items = fs.readdirSync(src, { withFileTypes: true });
+
+  // Itera sobre cada item
+  items.forEach((item) => {
+    const sourcePath = resolve(src, item.name);
+    const destinationPath = resolve(dest, item.name);
+
+    if (item.isDirectory()) {
+      if (item.name !== "styles" && item.name !== "css") {
+        copyDirectory(sourcePath, destinationPath);
+      }
+    } else {
+      if (extname(item.name) !== "css")
+        fs.copyFileSync(sourcePath, destinationPath);
+    }
+  });
+};
+
 async function buildJs() {
   const entryPoints = glob.sync(
     resolve(src, "**", "*.{js,ts}").replaceAll("\\", "/"),
     {
       ignore: [resolve(src, "vendor", "**").replaceAll("\\", "/")],
+    }
+  );
+
+  const vendorEntryPoints = glob.sync(
+    resolve(src, "vendor", "**", "*.{js,ts}").replaceAll("\\", "/"),
+    {
+      ignore: [resolve(src, "**").replaceAll("\\", "/")],
     }
   );
 
@@ -41,10 +71,7 @@ async function buildJs() {
       }),
     esbuild
       .build({
-        entryPoints: [
-          resolve(src, "vendor", "**", "*.js"),
-          resolve(src, "vendor", "**", "*.ts"),
-        ],
+        entryPoints: vendorEntryPoints,
         minifyIdentifiers: false,
         minifySyntax: true,
         minifyWhitespace: true,
@@ -79,7 +106,6 @@ async function buildCss() {
 
                 const { css } = await postcss([
                   postcssNested,
-                  tailwindcss,
                   postcssPresetEnv({
                     autoprefixer: {},
                   }),
@@ -231,4 +257,6 @@ module.exports = async function build(type) {
 
   if (type.includes("css") || type.includes("html")) await compileJson();
   if (type.includes("html")) await buildHtml();
+  if (type.includes("static"))
+    copyDirectory(resolve(src, "assets"), resolve(cit, "assets"));
 };
