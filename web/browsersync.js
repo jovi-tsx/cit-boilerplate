@@ -2,10 +2,10 @@ const path = require("path");
 const bs = require("browser-sync").create();
 const build = require("./build");
 
-require("dotenv").config({ path: path.join(__dirname, ".env") });
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
-const src = path.join(__dirname, "src");
-const cit = path.join(__dirname, ".cit");
+const src = path.resolve(__dirname, "src");
+const cit = path.resolve(__dirname, ".cit");
 
 build(["css", "js", "html", "static"]).then(() => {
   // .init starts the server
@@ -16,7 +16,7 @@ build(["css", "js", "html", "static"]).then(() => {
     },
   });
 
-  bs.watch(path.join(src, "**", "*.{js,css,html}"), async (event, file) => {
+  bs.watch(path.resolve(src, "**", "*.{js,css,html}"), async (event, file) => {
     if (event === "change") {
       if (file.endsWith(".css")) await build(["css"]);
       else if (file.endsWith(".js")) await build(["js"]);
@@ -26,9 +26,12 @@ build(["css", "js", "html", "static"]).then(() => {
     }
   });
 
-  bs.watch(path.join(src, "assets", "**", "*.*"), async (event, file) => {
-    if (event === "change")
+  bs.watch(path.resolve(src, "assets", "**", "*.*"), async (event, file) => {
+    if (event === "change") {
       if (file.endsWith(".css")) return;
-      else await build["static"];
+      else await build(["static"]);
+    }
+
+    bs.reload();
   });
 });
