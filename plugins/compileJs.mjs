@@ -7,15 +7,24 @@ const citJsPlugin = () => ({
     build.onStart(() => console.log("🟠 Compilando arquivos JS..."));
 
     build.onEnd((result) => {
-      for (const file of result.outputFiles) {
-        const filename = file.path.split("\\").slice(-1)[0];
+      for (const { path, contents } of result.outputFiles) {
+        const filename = path.split("\\").slice(-1)[0];
+        const folder = path.split("\\").slice(-2)[0];
 
         if (["cit-smart-frame.js"].includes(filename)) continue;
-        else if (!file.path.includes("components"))
-          fs.writeFileSync(`.build/js/${filename}`, file.contents);
+        else if (!path.includes("components"))
+          fs.writeFileSync(`.build/js/${filename}`, contents);
         else {
-          fs.mkdirSync(file.path.replace(filename, ""), { recursive: true });
-          fs.writeFileSync(file.path, file.contents);
+          fs.mkdirSync(resolve(".build", "components"), { recursive: true });
+          fs.writeFileSync(
+            resolve(
+              ".build",
+              "components",
+              folder === "components" ? "" : folder,
+              filename
+            ),
+            contents
+          );
         }
       }
     });

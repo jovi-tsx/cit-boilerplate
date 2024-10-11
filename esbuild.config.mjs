@@ -1,9 +1,5 @@
-// ** Modules
 import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 
-// ** Third-party Imports
 import * as esbuild from "esbuild";
 
 // ** Plugins
@@ -15,108 +11,89 @@ import publishHtmlPlugin from "./plugins/publishHtmlPlugin.mjs";
 
 import "dotenv/config";
 
-// ** Variables
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const src = path.resolve(__dirname, "web", "src");
 const directories = [
-  ".build/components",
+  ".build/components/layout",
   ".build/css",
-  ".build/html",
+  ".build/html/forms",
   ".build/js",
 ];
 
-// ** Folder Handling
 fs.rmSync("./.build", { recursive: true, force: true });
 
 directories.forEach((dir) => {
   fs.mkdirSync(dir, { recursive: true });
 });
 
-// ** Scripts
 await Promise.all([
   esbuild
     .build({
-      entryPoints: [path.resolve(src, "components", "**", "*.ts")],
+      entryPoints: ["./web/src/components/*.ts"],
       outdir: ".build/components",
       bundle: true,
       platform: "browser",
       target: ["esnext"],
       tsconfig: "tsconfig.json",
     })
-    .catch((e) => {
-      console.log(e);
-      process.exit(1);
-    }),
+    .catch(() => process.exit(1)),
   esbuild
     .build({
-      entryPoints: [
-        path.resolve(src, "controllers", "**", "*.ts"),
-        path.resolve(src, "core", "**", "*.ts"),
-      ],
+      entryPoints: ["./web/src/controllers/*.ts", "./web/src/core/*.ts"],
       outdir: ".build/js",
       bundle: true,
       platform: "browser",
       target: ["esnext"],
       tsconfig: "tsconfig.json",
     })
-    .catch((e) => {
-      console.log(e);
-      process.exit(1);
-    }),
+    .catch(() => process.exit(1)),
 ]);
 
 await Promise.all([
   esbuild
     .build({
-      entryPoints: [path.resolve(src, "assets", "styles", "**", "*.css")],
+      entryPoints: ["./web/src/assets/styles/**/*.css"],
       outdir: ".build/css",
       bundle: false,
       write: false,
       plugins: [postcssPlugin()],
     })
-    .catch((e) => {
-      console.log(e);
+    .catch(() => {
       process.exit(1);
     }),
   esbuild
     .build({
       entryPoints: [
-        path.resolve(src, "controllers", "**", "*.js"),
-        path.resolve(src, "core", "**", "*.js"),
-        path.resolve(src, "components", "**", "*.js"),
+        "./web/src/controllers/*.js",
+        "./web/src/core/*.js",
+        "./web/src/components/**/*.js",
       ],
-      outdir: ".build",
+      outdir: ".build/js",
       loader: {
         ".js": "js",
       },
-      bundle: false,
       minifySyntax: true,
       write: false,
       plugins: [citJsPlugin()],
     })
-    .catch((e) => {
-      console.log(e);
+    .catch(() => {
       process.exit(1);
     }),
 ]);
 
 await esbuild
   .build({
-    entryPoints: [path.resolve(src, "assets", "styles", "**", "*.json")],
+    entryPoints: ["./web/src/assets/styles/**/*.json"],
     outdir: ".build",
     bundle: true,
     write: false,
     plugins: [combineJsonPlugin("./.build/cssModules.json")],
   })
-  .catch((e) => {
-    console.log(e);
+  .catch(() => {
     process.exit(1);
   });
 
 await esbuild
   .build({
-    entryPoints: [path.resolve(src, "**", "*.html")],
+    entryPoints: ["./web/src/**/*.html"],
     outdir: ".build/html",
     write: false,
     loader: {
@@ -124,14 +101,13 @@ await esbuild
     },
     plugins: [posthtmlPlugin()],
   })
-  .catch((e) => {
-    console.log(e);
+  .catch(() => {
     process.exit(1);
   });
 
-/* await esbuild
+await esbuild
   .build({
-    entryPoints: [".build/html/forms/layout.html"],
+    entryPoints: [".build/components/layout/template.html"],
     outdir: ".build/html",
     loader: {
       ".html": "text",
@@ -139,8 +115,6 @@ await esbuild
     write: false,
     plugins: [publishHtmlPlugin()],
   })
-  .catch((e) => {
-    console.log(e);
+  .catch(() => {
     process.exit(1);
   });
- */
